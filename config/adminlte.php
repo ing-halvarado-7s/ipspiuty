@@ -315,7 +315,7 @@ return [
             'text'        => 'Afiliados',
             'url'         => 'afiliado',
             'icon' => 'fas fa-fw fa-user',
-           // 'can'  => 'manage-blog',
+            'can'  => 'admin',
 
         ],
        /* ['header' => 'account_settings'],
