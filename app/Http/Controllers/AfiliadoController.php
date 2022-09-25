@@ -42,6 +42,11 @@ public function __construct(){
         return view('afiliados.crear');
     }
 
+    public function createIndividual()
+    {
+        return view('afiliados.crearIndividual');
+    }
+
     /**
      * Store a newly created resource in storage.
      *

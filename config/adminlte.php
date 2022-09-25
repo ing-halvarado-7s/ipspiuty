@@ -311,13 +311,15 @@ return [
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],*/
-        [
-            'text'        => 'Afiliados',
-            'url'         => 'afiliado',
-            'icon' => 'fas fa-fw fa-user',
-            'can'  => 'admin',
 
-        ],
+            [
+                'text' => 'Afiliados',
+                'url'  => 'afiliado',
+                'icon' => 'fas fa-fw fa-user',
+                'can'  => ['admin'],
+
+            ],
+
        /* ['header' => 'account_settings'],
         [
             'text' => 'profile',
@@ -384,6 +386,7 @@ return [
             'url'        => '#',
         ], */
     ],
+
 
     /*
     |--------------------------------------------------------------------------

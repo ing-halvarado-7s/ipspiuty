@@ -33,5 +33,7 @@ Route::group(['middleware' =>['auth']],function () {
     /* Route::resource('roles', RolController::class);
     Route::resource('usuarios', UsuarioController::class); */
     Route::resource('afiliado', AfiliadoController::class);
+    Route::get('individual', [AfiliadoController::class, 'createIndividual'])->name('afiliado.createIndividual');
+
     Route::resource('beneficiario', BeneficiarioController::class);
 });
