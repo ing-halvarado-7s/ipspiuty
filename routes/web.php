@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Afiliado;
 use App\Http\Controllers\HomeController;
 /* use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController; */
@@ -19,14 +21,26 @@ use App\Http\Controllers\BeneficiarioController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/dash', function () {
-    return view('dash.index');
+
+    if(Auth::user()->hasRole('Administrador')){
+        return view('dash.index');
+    }else{
+        $afil = Afiliado::where('user_id', Auth::id())->get();
+
+        if ($afil->isEmpty()) {
+            return view('afiliados.crearIndividual');
+        }else{
+            $afiliado = $afil[0];
+            return view('afiliados.editar', compact('afiliado'));
+        }
+    }
 })->name('dash');
 
 Route::group(['middleware' =>['auth']],function () {
@@ -36,4 +50,7 @@ Route::group(['middleware' =>['auth']],function () {
     Route::get('individual', [AfiliadoController::class, 'createIndividual'])->name('afiliado.createIndividual');
 
     Route::resource('beneficiario', BeneficiarioController::class);
+    Route::get('beneficiario/indexBeneficiario/{afiliado_id}', [BeneficiarioController::class, 'indexBeneficiario'])->name('beneficiario.indexBeneficiario');
+    Route::get('beneficiario/createBeneficiario/{afiliado_id}', [BeneficiarioController::class, 'createBeneficiario'])->name('beneficiario.createBeneficiario');
+
 });

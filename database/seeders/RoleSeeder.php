@@ -23,7 +23,13 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'afiliado.index'])->syncRoles([$roleAdmin]);
         Permission::create(['name' => 'afiliado.crear'])->syncRoles([$roleAdmin,$roleAfiliado]);
+        Permission::create(['name' => 'afiliado.crearIndividual'])->syncRoles([$roleAfiliado]);
         Permission::create(['name' => 'afiliado.editar'])->syncRoles([$roleAdmin,$roleAfiliado]);
         Permission::create(['name' => 'afiliado.eliminar'])->syncRoles([$roleAdmin]);
+
+        Permission::create(['name' => 'beneficiario.index'])->syncRoles([$roleAdmin,$roleAfiliado]);
+        Permission::create(['name' => 'beneficiario.crear'])->syncRoles([$roleAdmin,$roleAfiliado]);
+        Permission::create(['name' => 'beneficiario.editar'])->syncRoles([$roleAdmin,$roleAfiliado]);
+        Permission::create(['name' => 'beneficiario.eliminar'])->syncRoles([$roleAdmin,$roleAfiliado]);
     }
 }

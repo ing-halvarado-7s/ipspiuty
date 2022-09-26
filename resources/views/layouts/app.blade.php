@@ -37,17 +37,25 @@
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
                         @guest
-                            @if (Route::has('login'))
+                        <div class="row">
+                            <div class="col-sm">
+                                @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    <a class="btn btn-success" href="{{ route('login') }}">{{ __('   Iniciar  ') }}</a>
                                 </li>
                             @endif
+                            </div>
+                            <div class="col-sm">
+                                @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class= "btn btn-success" href="{{ route('register') }}">{{ __('Registro') }}</a>
+                                </li>
+                            @endif
+                            </div>
+                        </div>
 
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
+
+
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

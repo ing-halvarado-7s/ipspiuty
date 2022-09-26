@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Afiliado;
+use App\Models\user;
 
 class AfiliadoController extends Controller
 {
@@ -12,6 +13,7 @@ class AfiliadoController extends Controller
 public function __construct(){
     $this->middleware('permission:afiliado.index|afiliado.crear|afiliado.editar|afiliado.eliminar',['only'=>['index']]);
     $this->middleware('permission:afiliado.crear',['only'=>['create','store']]);
+    $this->middleware('permission:afiliado.crearIndividual',['only'=>['createIndividual']]);
     $this->middleware('permission:afiliado.editar',['only'=>['edit','update']]);
     $this->middleware('permission:afiliado.eliminar',['only'=>['destroy']]);
 }
@@ -56,6 +58,7 @@ public function __construct(){
     public function store(Request $request)
     {
         request()->validate([
+            'proceso'=>'required',
             'numero_de_cedula'=>'required',
             'nombres'=>'required',
             'apellidos'=>'required',
@@ -63,6 +66,7 @@ public function __construct(){
             'fecha_de_nacimiento'=>'required',
             'estado_civil'=>'required',
             'numero_de_telefono'=>'required',
+            'correo_electronico'=>'required',
             'direccion_de_habitacion'=>'required',
             'fecha_de_ingreso'=>'required',
             'estatus_laboral'=>'required',
@@ -71,10 +75,20 @@ public function __construct(){
         ]);
 
 
-
         $afiliado = new Afiliado();
+        if(Auth::user()->hasRole('Administrador')){
+            $user=User::create([
+                'name' => $request->nombres.' '.$request->apellidos,
+                'email' => $request->correo_electronico,
+                'password' => bcrypt($request->numero_de_cedula)
+            ])->assignRole('Afiliado');
 
-        $afiliado->user_id= Auth::id();
+            $afiliado->user_id= $user->id;
+        }else{
+            $afiliado->user_id= Auth::id();
+        }
+
+        $afiliado->proceso = $request->proceso;
         $afiliado->numero_de_cedula= $request->numero_de_cedula;
         $afiliado->nombres= $request->nombres;
         $afiliado->apellidos= $request->apellidos;
@@ -95,7 +109,13 @@ public function __construct(){
 
         $afiliado->save();
 
-        return redirect()->route('afiliados.index')->with('success','Registro creado exitosamente');
+        if(Auth::user()->hasRole('Administrador')){
+            return redirect()->route('afiliado.index')->with('success','Registro creado exitosamente');
+        }else{
+            return redirect()->route('afiliado.edit',compact('afiliado'));
+        }
+
+
 
     }
 
@@ -132,6 +152,7 @@ public function __construct(){
     public function update(Request $request, $id)
     {
         request()->validate([
+            'proceso'=>'required',
             'numero_de_cedula'=>'required',
             'nombres'=>'required',
             'apellidos'=>'required',
@@ -139,6 +160,8 @@ public function __construct(){
             'fecha_de_nacimiento'=>'required',
             'estado_civil'=>'required',
             'numero_de_telefono'=>'required',
+            'correo_electronico'=>'required',
+
             'direccion_de_habitacion'=>'required',
             'fecha_de_ingreso'=>'required',
             'estatus_laboral'=>'required',
@@ -150,7 +173,8 @@ public function __construct(){
 
         $afiliado = Afiliado::find($id);
 
-        $afiliado->user_id= Auth::id();
+        $afiliado->user_id= $afiliado->user_id;
+        $afiliado->proceso = $request->proceso;
         $afiliado->numero_de_cedula= $request->numero_de_cedula;
         $afiliado->nombres= $request->nombres;
         $afiliado->apellidos= $request->apellidos;
@@ -171,7 +195,7 @@ public function __construct(){
 
         $afiliado->update();
 
-        return redirect()->route('afiliados.index')->with('success','Registro actualizado exitosamente');
+        return redirect()->route('afiliado.index')->with('success','Registro actualizado exitosamente');
 
     }
 
@@ -185,9 +209,10 @@ public function __construct(){
     {
         $afiliado = Afiliado::find($id);
         $user = User::where('id','=',$afiliado->user_id);
+       // dd($user);
 
         $afiliado->delete();
         $user->delete();
-        return redirect()->route('afiliados.index')->with('destroy','Registro eliminado exitosamente');
+        return redirect()->route('afiliado.index')->with('destroy','Registro eliminado exitosamente');
     }
 }

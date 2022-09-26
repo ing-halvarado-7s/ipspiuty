@@ -15,6 +15,7 @@ class Afiliado extends Model
     //columnas de uso masivo
     protected $fillable = [
         'user_id',
+        'proceso',
         'numero_de_cedula',
         'nombres',
         'apellidos',
